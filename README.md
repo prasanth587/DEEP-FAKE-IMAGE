@@ -131,3 +131,4 @@ This project uses the **Hugging Face Inference API** for real-time deepfake dete
 ## 📜 License
 
 Authorized Sorcerer License. For educational purposes only.
+# DEEP-FAKE-IMAGE

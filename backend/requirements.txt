@@ -1,0 +1,12 @@
+fastapi[all]
+sqlalchemy
+psycopg2-binary
+bcrypt
+pyjwt
+opencv-python
+pillow
+numpy
+pytest
+python-multipart
+python-dotenv
+requests

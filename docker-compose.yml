@@ -21,7 +21,7 @@ services:
     container_name: deepfake-backend
     restart: always
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-deepfake_db}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@db:5432/deepfake_db}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM:-HS256}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-30}

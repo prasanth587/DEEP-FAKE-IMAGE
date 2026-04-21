@@ -10,6 +10,26 @@ A high-performance deepfake detection system utilizing **Machine Learning**, neu
 - **System Archives**: Full history of performed scans with detailed reports.
 - **Premium Rituals**: Subscription-based high-tier access (Simulation).
 
+## ⚠️ The Problem: Why JujutsuTech?
+
+In an era of rapid AI advancement, the line between reality and synthetic media has blurred. **Deepfakes** and manipulated images are becoming a massive financial burden for digital platforms.
+
+A major rising threat is **Refund Fraud**:
+- **Fake Evidence**: Scammers use AI-generated images of "spoiled food," "missing items," or "damaged packages" to trick companies like **Swiggy, Zomato, and Amazon** into issuing unearned refunds.
+- **Scale**: These scams are often automated or shared in groups, costing businesses millions in fraudulent payouts.
+- **Accessibility**: High-quality fake images are now easy to create, making traditional manual verification impossible for high-volume delivery platforms.
+
+Traditional verification methods are no longer sufficient. Detecting synthetic artifacts requires specialized high-performance computing and complex forensic analysis, which are often inaccessible to the average user.
+
+## 🎯 Our Mission: Reclaiming Truth
+
+**JujutsuTech** was built to provide a **defense layer** for businesses and individuals. Our goal is to provide a **powerful, accessible, and user-centric** platform for deepfake detection, specifically designed to identify fraudulent evidence in seconds.
+
+The system leverages:
+1.  **Forensic Precision**: Using Error Level Analysis (ELA) to find hidden "glitches" in digital files.
+2.  **AI vs AI**: Deploying state-of-the-art Neural Networks to recognize the subtle biological and digital signatures of synthetic generators.
+3.  **Accessibility**: A clean, intuitive interface that makes high-end forensics as simple as a single click.
+
 ## 🛠️ Technology Stack
 
 - **Backend**: Python, FastAPI, SQLAlchemy, PyTorch, Transformers, OpenCV.

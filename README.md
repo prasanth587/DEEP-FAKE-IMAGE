@@ -69,12 +69,9 @@ The easiest way to run the project is using Docker Compose.
 
 ## 🔧 Local Development Setup
 
-
-### 
-
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-
-
+> [!TIP]
+> **Windows Users**: If you get an error saying "scripts are disabled on this system" when activating the virtual environment, run this command in PowerShell as Administrator once:
+> `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
 ### Backend
 

@@ -89,12 +89,32 @@ The easiest way to run the project is using Docker Compose.
     ```bash
     cp .env.example .env
     ```
-    *Make sure to add your `HF_TOKEN` in the `.env` file.*
+    **CRITICAL STEP**: Open `backend/.env` and fill in the values. Get the credentials from the project owner (Prasanth):
+    ```env
+    DATABASE_URL=<ask Prasanth for the database URL>
+    SECRET_KEY=<ask Prasanth for the secret key>
+    ALGORITHM=HS256
+    ACCESS_TOKEN_EXPIRE_MINUTES=30
+    HF_TOKEN=<your own free token from huggingface.co -> Settings -> Access Tokens>
+    ```
 5.  **Run the API**:
     ```bash
     uvicorn main:app --reload
     ```
     The API will be available at [http://localhost:8000](http://localhost:8000).
+
+
+    #### 2nd method
+
+    cd "deep fake detection"/backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+uvicorn main:app --reload
+
+
+
 
 ### Frontend
 

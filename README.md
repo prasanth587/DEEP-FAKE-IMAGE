@@ -71,39 +71,46 @@ The easiest way to run the project is using Docker Compose.
 
 ### Backend
 
-1.  Navigate to `backend/`:
+1.  **Navigate to the backend directory**:
     ```bash
     cd backend
     ```
-2.  Create and activate a virtual environment:
+2.  **Set up a virtual environment**:
     ```bash
     python3 -m venv venv
     source venv/bin/activate  # On Windows: venv\Scripts\activate
     ```
-3.  Install dependencies:
+3.  **Install dependencies**:
     ```bash
     pip install -r requirements.txt
     ```
-4.  Run the API:
+4.  **Configure environment**:
+    Create a `.env` file in the `backend/` folder:
+    ```bash
+    cp .env.example .env
+    ```
+    *Make sure to add your `HF_TOKEN` in the `.env` file.*
+5.  **Run the API**:
     ```bash
     uvicorn main:app --reload
     ```
-    *(Note: If running from the root directory, use `uvicorn backend.main:app --reload`)*
+    The API will be available at [http://localhost:8000](http://localhost:8000).
 
 ### Frontend
 
-1.  Navigate to `frontend/`:
+1.  **Navigate to the frontend directory**:
     ```bash
     cd frontend
     ```
-2.  Install dependencies:
+2.  **Install dependencies**:
     ```bash
     npm install
     ```
-3.  Start the development server:
+3.  **Start the development server**:
     ```bash
     npm run dev
     ```
+    The frontend will be available at [http://localhost:5173](http://localhost:5173).
 
 ## � Technical Architecture
 

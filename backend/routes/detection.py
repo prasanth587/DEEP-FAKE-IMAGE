@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
-from ..utils.auth import get_current_user
-from ..utils.detection import process_image_cv2, process_video_cv2
-from ..models.user import User, ScanResult
-from ..database.db import get_db
+from utils.auth import get_current_user
+from utils.detection import process_image_cv2, process_video_cv2
+from models.user import User, ScanResult
+from database.db import get_db
 
 router = APIRouter()
 

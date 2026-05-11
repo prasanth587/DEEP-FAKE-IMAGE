@@ -69,16 +69,31 @@ The easiest way to run the project is using Docker Compose.
 
 ## 🔧 Local Development Setup
 
+
+### 
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+
+
 ### Backend
 
 1.  **Navigate to the backend directory**:
     ```bash
     cd backend
     ```
-2.  **Set up a virtual environment**:
     ```bash
+    # Linux/macOS:
     python3 -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    source venv/bin/activate
+
+    # Windows (PowerShell):
+    python -m venv venv
+    .\venv\Scripts\Activate.ps1
+
+    # Windows (Command Prompt):
+    python -m venv venv
+    venv\Scripts\activate
     ```
 3.  **Install dependencies**:
     ```bash
@@ -106,12 +121,12 @@ The easiest way to run the project is using Docker Compose.
 
     #### 2nd method
 
-    cd "deep fake detection"/backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-uvicorn main:app --reload
+    cd backend
+    # Follow the virtual environment activation steps above based on your OS.
+    # (Example for Linux: source venv/bin/activate)
+    # (Example for Windows PowerShell: .\venv\Scripts\Activate.ps1)
+    pip install -r requirements.txt
+    uvicorn main:app --reload
 
 
 

@@ -316,10 +316,10 @@ function App() {
 
   let status = 'NATURAL';
   let statusColor = 'var(--secondary)';
-  if (aiScore > 0.7) {
+  if (aiScore > 0.85) {
     status = 'CURSED';
     statusColor = 'var(--accent)';
-  } else if (aiScore > 0.4) {
+  } else if (aiScore > 0.6) {
     status = 'SUSPICIOUS';
     statusColor = '#ffcc00'; // Amber/Yellow
   }

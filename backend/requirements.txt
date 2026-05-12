@@ -10,3 +10,4 @@ pytest
 python-multipart
 python-dotenv
 requests
+huggingface_hub

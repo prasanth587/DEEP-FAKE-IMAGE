@@ -13,9 +13,34 @@ from dotenv import load_dotenv
 load_dotenv()
 HF_TOKEN = os.getenv("HF_TOKEN")
 
-# Python Interface for Hugging Face Inference API (Deep Learning)
-API_URL = "https://api-inference.huggingface.co/models/umm-maybe/AI-image-detector"
+# Specialized Deepfake Detection Model (using new HF Inference Router)
+API_URL = "https://router.huggingface.co/hf-inference/models/prithivMLmods/deepfake-detector-model-v1"
 headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+
+def map_ai_labels(results):
+    """
+    Maps model labels to our standards (Real vs Fake).
+    """
+    if not isinstance(results, list):
+        return results
+        
+    mapped_results = []
+    for item in results:
+        label = str(item.get("label", "")).lower()
+        score = item.get("score", 0)
+        
+        # Deepfake detection models usually return labels like 'real' and 'fake'
+        # We map them to 'artificial' and 'human' to match the frontend expectations
+        if "fake" in label or "synthetic" in label or "generated" in label:
+            mapped_label = "artificial"
+        elif "real" in label or "natural" in label or "human" in label:
+            mapped_label = "human"
+        else:
+            mapped_label = label
+            
+        mapped_results.append({"label": mapped_label, "score": score})
+        
+    return sorted(mapped_results, key=lambda x: x['score'], reverse=True)
 
 def get_ela(image_bytes, quality=90):
     """
@@ -54,53 +79,67 @@ def process_image_cv2(image_bytes: bytes):
     # 1. Hugging Face API Detection
     ai_results = None
     try:
+        # Check for token existence
+        if not HF_TOKEN or len(HF_TOKEN) < 10 or HF_TOKEN == "your_huggingface_token_here":
+            print("ERROR: Hugging Face Token is missing or too short.")
+            return {"error": "Hugging Face API Token is missing or invalid. Please check your .env file."}
+
         print(f"DEBUG: Calling HF API for image detection: {API_URL}")
-        response = requests.post(API_URL, headers=headers, data=image_bytes, timeout=30)
+        # Log first few characters of token for debugging (SAFE)
+        print(f"DEBUG: Using token starting with: {HF_TOKEN[:8]}...")
+        
+        # Ensure Content-Type is set for the new inference router
+        request_headers = {**headers, "Content-Type": "image/jpeg"}
+        response = requests.post(API_URL, headers=request_headers, data=image_bytes, timeout=30)
         print(f"DEBUG: HF API Response Status: {response.status_code}")
         
         if response.status_code == 200:
             ai_results = response.json()
-            print(f"DEBUG: HF API Results: {ai_results}")
+            print(f"DEBUG: HF API Results (Raw): {ai_results}")
             
             # Check if the API returned an error (like model loading)
             if isinstance(ai_results, dict) and "error" in ai_results:
                 return {"error": f"HF API Error: {ai_results['error']}"}
+            
+            # Map labels for frontend compatibility
+            ai_results = map_ai_labels(ai_results)
+            print(f"DEBUG: Mapped Results: {ai_results}")
+
         elif response.status_code == 503:
             # Model is loading
             try:
                 err_data = response.json()
                 wait_time = err_data.get("estimated_time", 20)
-                return {"error": f"Model is currently loading. Estimated time: {wait_time}s. Please retry shortly."}
+                return {"error": f"Model is currently loading at Hugging Face. Estimated time: {wait_time}s. Please retry in a moment."}
             except:
                 return {"error": "Model is currently loading at Hugging Face. Please try again in 30 seconds."}
+        elif response.status_code == 401:
+            return {"error": "Hugging Face Authentication failed. Please check your HF_TOKEN in the .env file."}
+        elif response.status_code == 404:
+            print(f"DEBUG: 404 Error Detail: {response.text[:500]}")
+            return {"error": "The AI detection model is temporarily unavailable (404). We are looking for a replacement model."}
         else:
             print(f"DEBUG: HF API non-200 status: {response.text[:200]}")
-            # FALLBACK: If API fails, provide a simulated result for demonstration
-            print("DEBUG: Using fallback simulation for detection.")
-            ai_results = [
-                {"label": "human", "score": np.random.uniform(0.1, 0.4)},
-                {"label": "artificial", "score": np.random.uniform(0.6, 0.9)}
-            ]
-            # Randomly flip if needed
-            if np.random.random() > 0.5:
-                ai_results[0]['score'], ai_results[1]['score'] = ai_results[1]['score'], ai_results[0]['score']
+            return {"error": f"AI detection failed (Status {response.status_code}). The Hugging Face service might be down or busy."}
             
-            # Sort by score
-            ai_results = sorted(ai_results, key=lambda x: x['score'], reverse=True)
-            
+    except requests.exceptions.Timeout:
+        return {"error": "AI detection timed out. Please check your internet connection and try again."}
     except Exception as e:
         print(f"DEBUG: HF API Exception: {str(e)}")
-        # FALLBACK: Also use simulation on exception
-        print("DEBUG: Using fallback simulation for detection (after exception).")
-        ai_results = [
-            {"label": "human", "score": np.random.uniform(0.4, 0.7)},
-            {"label": "artificial", "score": np.random.uniform(0.3, 0.6)}
-        ]
-        ai_results = sorted(ai_results, key=lambda x: x['score'], reverse=True)
+        return {"error": f"An unexpected error occurred during AI detection: {str(e)}"}
     
-    # If for some reason ai_results is still None (e.g. timeout caught specifically)
-    if ai_results is None:
-        ai_results = [{"label": "human", "score": 0.5}, {"label": "artificial", "score": 0.5}]
+    # Ensure we have valid results before proceeding
+    if not ai_results or not isinstance(ai_results, list):
+        return {"error": "Invalid response received from the AI detection service."}
+    
+    # 2. Local ELA Processing
+    ela_bytes = get_ela(image_bytes)
+    ela_base64 = base64.b64encode(ela_bytes).decode('utf-8')
+    
+    return {
+        "ai_detection": ai_results,
+        "ela_image": f"data:image/jpeg;base64,{ela_base64}"
+    }
     
     # 2. Local ELA Processing
     ela_bytes = get_ela(image_bytes)
